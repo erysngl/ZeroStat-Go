@@ -71,14 +71,34 @@ ZeroStat-Go handles configuration initially via environment variables (falling b
 
 ## Installation & Deployment
 
-### Method 1: Docker Compose (Recommended)
+### Method 1: Docker Deployment (Recommended)
 
-The most robust way to run ZeroStat-Go, mapping host metrics accurately into the container.
+The most robust way to run ZeroStat-Go, mapping host metrics accurately into the container. Save the following content as `docker-compose.yml`:
 
-```bash
-docker compose up -d --build
+```yaml
+services:
+  zerostat:
+    image: ghcr.io/erysngl/zerostat-go:latest
+    container_name: zerostat-dashboard
+    restart: unless-stopped
+    ports:
+      - "9124:9124"
+    environment:
+      - ZEROSTAT_PASSWORD=admin
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro
 ```
-*Note: The `docker-compose.yml` mounts read-only host directories (`/proc`, `/sys`) to ensure the container accurately reports host bare-metal statistics rather than its own isolated namespace. The dashboard is accessible on port **9124** by default.*
+
+Then, launch the system and access your dashboard:
+
+1. Bring up the container in the background:
+   ```bash
+   docker-compose up -d
+   ```
+2. Navigate to **http://localhost:9124** in your browser.
 
 ### Method 2: Native Build
 

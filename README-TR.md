@@ -71,14 +71,34 @@ ZeroStat-Go konfigürasyonu, varsayılan olarak çevresel (.env) değişkenlerle
 
 ## Kurulum ve Dağıtım
 
-### Yöntem 1: Docker Compose (Önerilir)
+### Yöntem 1: Docker ile Kurulum (Önerilir)
 
-Gerçek sunucu metriklerini konteynere doğru biçimde eşleyerek ZeroStat-Go'yu çalıştırmanın en sağlıklı ve temiz yoludur.
+Gerçek sunucu metriklerini konteynere doğru biçimde eşleyerek ZeroStat-Go'yu çalıştırmanın en sağlıklı ve temiz yoludur. Aşağıdaki içeriği `docker-compose.yml` adıyla kaydedin:
 
-```bash
-docker compose up -d --build
+```yaml
+services:
+  zerostat:
+    image: ghcr.io/erysngl/zerostat-go:latest
+    container_name: zerostat-dashboard
+    restart: unless-stopped
+    ports:
+      - "9124:9124"
+    environment:
+      - ZEROSTAT_PASSWORD=admin
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro
 ```
-*Not: `docker-compose.yml` dosyası sunucunun çıplak metal (bare-metal) istatistiklerini doğru şekilde okuyabilmesi adına host makinenin `/proc` ve `/sys` dizinlerini salt-okunur (read-only) şeklinde içe aktarır. Panel, varsayılan olarak **9124** portu üzerinden yayınlanır.*
+
+Ardından sistemi başlatın ve panele erişimi sağlayın:
+
+1. Konteyneri arka planda başlatmak için komutu çalıştırın:
+   ```bash
+   docker-compose up -d
+   ```
+2. Tarayıcınızdan **http://localhost:9124** adresine giderek panele erişin.
 
 ### Yöntem 2: Doğrudan Cihaz Üzerinde Derleme (Native Build)
 
