@@ -1,0 +1,25 @@
+{{ template "base.html" . }}
+{{ define "content" }}
+
+<div class="w-full max-w-6xl w-full">
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold">{{ call $.T "Dashboard" }}</h2>
+    </div>
+
+    <!-- The container triggers the HTMX polling, but swap is none because stats.html contains OOB targets -->
+    <div hx-get="/api/stats" hx-trigger="every 2s" hx-swap="none"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Render Initial Stats immediately to prevent flash -->
+        {{ template "stats.html" . }}
+
+    </div>
+</div>
+
+<script>
+    document.body.addEventListener('htmx:afterSettle', function (evt) {
+        console.log('[ZeroStat-Go] HTMX Swap Event Settled. UI Updated.');
+    });
+</script>
+
+{{ end }}

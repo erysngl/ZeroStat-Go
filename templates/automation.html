@@ -1,0 +1,228 @@
+{{ template "base.html" . }}
+{{ define "content" }}
+
+<div class="w-full max-w-4xl w-full">
+
+    <div class="mb-8 flex justify-between items-center">
+        <h2 class="text-2xl font-bold">{{ call $.T "Automation" }}</h2>
+    </div>
+
+    {{ if .Info }}
+    <div
+        class="mb-6 p-4 rounded-lg bg-green-50/50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-sm font-medium border border-green-200 dark:border-green-800">
+        {{ .Info }}
+    </div>
+    {{ end }}
+
+    <div
+        class="card bg-gray-50 dark:bg-darkcard border border-blue-500/20 mb-8 p-4 flex gap-4 text-sm text-blue-800 dark:text-blue-300">
+        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p><strong>{{ call $.T "GuardrailsDesc" }}</strong></p>
+    </div>
+
+    <div class="space-y-6">
+        <!-- Add New Rule Form -->
+        <div class="card border border-gray-200 dark:border-gray-800 shadow-sm relative overflow-visible">
+            <h3 class="text-lg font-semibold mb-4 pb-2 border-b border-gray-100 dark:border-gray-800">{{ call $.T
+                "CreateRule" }}</h3>
+            <form method="POST" action="/automation/add" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T "TargetMetric"
+                        }}</label>
+                    <select name="metric" class="input-field mt-1">
+                        <option value="CPU">CPU Usage (%)</option>
+                        <option value="RAM">RAM Usage (%)</option>
+                        <option value="Disk">Disk Capacity (%)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T
+                        "OperatorLabel"
+                        }}</label>
+                    <select name="operator" class="input-field mt-1">
+                        <option value=">">{{ call $.T "OpGreater" }}</option>
+                        <option value="<">{{ call $.T "OpLess" }}</option>
+                        <option value="==">{{ call $.T "OpEqual" }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T "ThresholdPct"
+                        }}</label>
+                    <input type="number" step="0.1" name="threshold" min="0" max="100" value="90.5" required
+                        class="input-field mt-1">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T "DebounceSec"
+                        }}</label>
+                    <input type="number" name="duration" min="1" max="86400" value="30"
+                        title="{{ call $.T `DebounceHint` }}" required class="input-field mt-1">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T "CooldownSec"
+                        }}</label>
+                    <input type="number" name="cooldown" min="0" max="86400" value="60"
+                        title="{{ call $.T `CooldownHint` }}" required class="input-field mt-1">
+                </div>
+
+                <div class="lg:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 flex justify-between">
+                        {{ call $.T "ShellCmd" }}
+                        <span class="text-xs text-gray-500 font-normal">{{ call $.T "Optional" }}</span>
+                    </label>
+                    <!-- Small helper dropdown for presets to auto-fill input via JS or HTMX -->
+                    <select onchange="document.getElementById('cmd_input').value=this.value; this.selectedIndex=0;"
+                        class="w-full text-sm p-2 mt-1 mb-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow">
+                        <option value="" disabled selected>{{ call $.T "SelectPreset" }}</option>
+                        <option value="docker stop $(docker ps -q)">{{ call $.T "PresetDockerStop" }}</option>
+                        <option value="sync; echo 1 > /proc/sys/vm/drop_caches">{{ call $.T "PresetClearCache" }}
+                        </option>
+                        <option value="systemctl restart my-app">{{ call $.T "PresetRestartApp" }}</option>
+                    </select>
+                    <input type="text" id="cmd_input" name="command" placeholder="{{ call $.T `PlaceholderCmd` }}"
+                        class="input-field font-mono text-sm">
+                </div>
+
+                <div class="lg:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 flex justify-between">
+                        {{ call $.T "MessageTemplate" }}
+                        <span class="text-xs text-gray-500 font-normal">{{ call $.T "Optional" }}</span>
+                    </label>
+                    <textarea id="msg_template" name="message_template" rows="2"
+                        class="input-field font-mono text-sm resize-y"
+                        placeholder="[ZeroStat-Go] {hostname} Warning: {metric} value is {value}%! (Threshold: {operator}{threshold}, Duration: {duration}s)"></textarea>
+                    <p class="text-xs text-gray-500 mt-1 mb-3">{{ call $.T "TemplateHint" }}</p>
+
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <button type="button"
+                            onclick="document.getElementById('msg_template').value='[CRITICAL-{{ `{.metric}` }}] HOST: {hostname} | VAL: {value}% | OP: {operator}{threshold} | TIME: {duration}s'"
+                            class="text-xs bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-300 px-3 py-1.5 rounded transition font-medium">{{
+                            call $.T "TemplateCritical" }}</button>
+                        <button type="button"
+                            onclick="document.getElementById('msg_template').value='[WARNING] {hostname} - {metric} is currently at {value}% (Limit passed: {operator}{threshold})'"
+                            class="text-xs bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-800 text-yellow-700 dark:text-yellow-300 px-3 py-1.5 rounded transition font-medium">{{
+                            call $.T "TemplateWarning" }}</button>
+                        <button type="button"
+                            onclick="document.getElementById('msg_template').value='[RECOVERY] {hostname} is back to normal! {metric}: {value}%'"
+                            class="text-xs bg-green-100 dark:bg-green-900/30 hover:bg-green-200 dark:hover:bg-green-800 text-green-700 dark:text-green-300 px-3 py-1.5 rounded transition font-medium">{{
+                            call $.T "TemplateRecovery" }}</button>
+                    </div>
+
+                    <div
+                        class="mt-4 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">{{ call $.T
+                            "TagLegendTitle" }}</p>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono text-gray-500 dark:text-gray-400">
+                            <div><span class="text-indigo-500 font-bold">{hostname}</span> - {{ call $.T "TagHostname"
+                                }}</div>
+                            <div><span class="text-indigo-500 font-bold">{metric}</span> - {{ call $.T "TagMetric" }}
+                            </div>
+                            <div><span class="text-indigo-500 font-bold">{value}</span> - {{ call $.T "TagValue" }}
+                            </div>
+                            <div><span class="text-indigo-500 font-bold">{threshold}</span> - {{ call $.T "TagThreshold"
+                                }}</div>
+                            <div><span class="text-indigo-500 font-bold">{operator}</span> - {{ call $.T "TagOperator"
+                                }}</div>
+                            <div><span class="text-indigo-500 font-bold">{duration}</span> - {{ call $.T "TagDuration"
+                                }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ call $.T "NotifChannel"
+                        }}</label>
+                    <select name="channel" class="input-field mt-1">
+                        <option value="none">{{ call $.T "Disabled" }}</option>
+                        <option value="webhook">{{ call $.T "Webhook" }}</option>
+                        <option value="telegram">{{ call $.T "TelegramBot" }}</option>
+                        <option value="email">{{ call $.T "EmailSMTP" }}</option>
+                    </select>
+                </div>
+
+                <div class="lg:col-span-3 pt-4 flex justify-end">
+                    <button type="submit" class="btn-primary w-full md:w-auto shadow-lg shadow-blue-500/20 px-8">{{ call
+                        $.T "AddRule" }}</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Active Rules List -->
+        <h3 class="text-xl font-bold tracking-tight mt-10 mb-4">{{ call $.T "ActiveRulesEngine" }}</h3>
+        {{ if eq (len .Data) 0 }}
+        <div
+            class="text-center py-12 bg-white dark:bg-darkcard border border-dashed border-gray-300 dark:border-gray-700 rounded-xl text-gray-500">
+            {{ call $.T "NoRulesConfigured" }}
+        </div>
+        {{ else }}
+        <div class="space-y-4">
+            {{ range .Data }}
+            <div
+                class="card p-5 border-l-4 {{ if .IsActive }}border-l-green-500{{ else }}border-l-gray-400{{ end }} flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold text-lg dark:text-white">{{ .MetricType }} {{ .Operator }} {{
+                            .ThresholdPercent
+                            }}%</span>
+                        <span
+                            class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-medium text-gray-600 dark:text-gray-300">{{
+                            call $.T "DebounceLabel" }}
+                            {{ .DurationSeconds }}s</span>
+
+                        <span
+                            class="text-xs px-2 py-1 rounded bg-indigo-50 dark:bg-indigo-900/30 font-medium text-indigo-600 dark:text-indigo-300">
+                            {{ call $.T "SentCountLabel" }}: {{ .SentCount }}
+                        </span>
+
+                        {{ if gt .CooldownSeconds 0 }}
+                        <span class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-medium text-gray-500">
+                            {{ call $.T "CooldownLabel" }} {{ .CooldownSeconds }}s
+                        </span>
+                        {{ end }}
+
+                        {{ if .HasTriggered }}
+                        <span
+                            class="text-xs px-2 py-1 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold animate-pulse">
+                            {{ call $.T "ViolationActive" }}
+                        </span>
+                        {{ end }}
+                    </div>
+                    {{ if .ShellCommand }}
+                    <div class="mt-2 text-sm font-mono text-gray-500 bg-gray-50 dark:bg-gray-900/50 p-2 rounded">
+                        $ {{ .ShellCommand }}
+                    </div>
+                    {{ end }}
+                    <div class="mt-2 text-xs text-blue-500 font-medium">{{ call $.T "ChannelLabel" }} {{
+                        .NotificationChannel }}</div>
+                </div>
+
+                <div class="flex w-full md:w-auto gap-3 justify-end items-center">
+                    <form method="POST" action="/automation/toggle">
+                        <input type="hidden" name="id" value="{{ .ID }}">
+                        <button type="submit"
+                            class="text-sm px-4 py-2 rounded font-semibold transition-colors {{ if .IsActive }}bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700{{ else }}bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-800{{ end }}">
+                            {{ if .IsActive }}{{ call $.T "Disable" }}{{ else }}{{ call $.T "Enable" }}{{ end }}
+                        </button>
+                    </form>
+                    <form method="POST" action="/automation/delete">
+                        <input type="hidden" name="id" value="{{ .ID }}">
+                        <button type="submit"
+                            class="text-sm px-4 py-2 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold hover:bg-red-200 dark:hover:bg-red-800/60 transition-colors">
+                            {{ call $.T "Remove" }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}

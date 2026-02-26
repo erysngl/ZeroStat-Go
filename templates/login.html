@@ -1,0 +1,31 @@
+{{ template "base.html" . }}
+{{ define "content" }}
+
+<div class="w-full max-w-md card p-8 mx-auto mt-20">
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-extrabold tracking-tight mb-2">{{ call $.T "LoginTitle" }}</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">ZeroStat Security Layer</p>
+    </div>
+
+    {{ if .Error }}
+    <div class="mb-4 p-3 rounded-lg bg-red-100 text-red-700 text-sm text-center border border-red-200">
+        {{ .Error }}
+    </div>
+    {{ end }}
+
+    <form method="POST" action="/login" class="space-y-6">
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {{ call $.T "Password" }}
+            </label>
+            <input type="password" id="password" name="password" required class="input-field mt-2 shadow-sm"
+                placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="btn-primary shadow-lg shadow-blue-500/30">
+            {{ call $.T "LoginBtn" }}
+        </button>
+    </form>
+</div>
+
+{{ end }}

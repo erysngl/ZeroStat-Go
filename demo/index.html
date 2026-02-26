@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroStat-Go - Live Premium Demo SPA</title>
+    <!-- Basic Tailwind from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .app-wrapper {
+                @apply min-h-screen bg-gray-50 text-gray-900 dark:bg-darkbg dark:text-gray-100 font-sans antialiased flex flex-col;
+            }
+            .card {
+                @apply bg-white dark:bg-darkcard shadow-lg rounded-xl p-6 border border-gray-100 dark:border-gray-800 transition-all;
+            }
+            .input-field {
+                @apply w-full px-4 py-2 mt-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+            }
+            .btn-primary {
+                @apply w-full py-2 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200 outline-none;
+            }
+            .nav-link {
+                @apply text-sm font-medium text-gray-600 dark:text-gray-300 transition-colors cursor-pointer hover:text-blue-600 dark:hover:text-blue-400;
+            }
+            .nav-link.active {
+                @apply font-bold text-blue-500 dark:text-blue-400;
+            }
+            .view-section {
+                @apply hidden w-full max-w-6xl mx-auto;
+            }
+            .view-section.active {
+                @apply block animate-[fadeIn_0.3s_ease-out];
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .toast {
+                @apply fixed bottom-5 right-5 z-50 px-4 py-2 rounded-lg shadow-xl text-white font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-20 opacity-0;
+            }
+            .toast.show {
+                @apply translate-y-0 opacity-100;
+            }
+        }
+    </style>
+</head>
+
+<body class="app-wrapper">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Prototype Warning Banner -->
+    <div class="w-full bg-yellow-500 text-yellow-900 text-center text-xs font-bold py-1 z-50 flex justify-center gap-2">
+        <span>LIVE UI SIMULATION</span>
+        <span class="opacity-50">|</span>
+        <span>CANLI ÖNİZLEME DEMO</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav
+        class="w-full bg-white/80 dark:bg-darkcard/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2" onclick="nav('dashboard')" style="cursor: pointer;">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span class="font-bold text-xl tracking-tight">ZeroStat-Go</span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a onclick="nav('dashboard')" id="nav-dashboard" class="nav-link active"
+                        data-i18n="Dashboard">Dashboard</a>
+                    <a onclick="nav('automation')" id="nav-automation" class="nav-link"
+                        data-i18n="Automation">Automation</a>
+                    <a onclick="nav('settings')" id="nav-settings" class="nav-link" data-i18n="Settings">Settings</a>
+                    <a href="#" class="nav-link text-red-500 hover:text-red-600" data-i18n="Logout"
+                        onclick="showToast('Offline Mode: Logout simulated', 'info')">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4 w-full">
+
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-section active">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold" data-i18n="Dashboard">Dashboard</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- CPU Card -->
+                <div class="card flex flex-col justify-between relative overflow-hidden">
+                    <div class="flex items-center gap-3 text-blue-500 mb-2 z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                            </path>
+                        </svg>
+                        <span class="font-semibold text-gray-700 dark:text-gray-300" data-i18n="CPUUsage">CPU
+                            Usage</span>
+                        <span
+                            class="ml-auto text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded font-mono">8
+                            Cores</span>
+                    </div>
+                    <div id="cpu-val"
+                        class="text-4xl font-bold tracking-tight mt-2 text-gray-900 dark:text-white z-10 transition-colors duration-500">
+                        0.0%</div>
+                    <svg viewBox="0 0 100 30" preserveAspectRatio="none"
+                        class="absolute bottom-0 left-0 w-full h-16 opacity-20 text-blue-500 z-0">
+                        <polyline id="cpu-chart" fill="none" class="stroke-current" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" points=""
+                            style="transition: all 0.5s ease-in-out;" />
+                    </svg>
+                </div>
+                <!-- RAM Card -->
+                <div class="card flex flex-col justify-between border-l-4 border-l-green-500 relative overflow-hidden">
+                    <div class="flex items-center gap-3 text-green-500 mb-2 z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        <span class="font-semibold text-gray-700 dark:text-gray-300" data-i18n="RAMUsage">RAM
+                            Usage</span>
+                    </div>
+                    <div id="ram-val"
+                        class="text-3xl font-bold text-gray-900 dark:text-white mt-1 z-10 transition-colors duration-500">
+                        0.0%</div>
+                    <div id="ram-desc" class="text-sm text-gray-500 dark:text-gray-400 font-mono mt-1 z-10">0.00 GB /
+                        16.00 GB</div>
+                    <svg viewBox="0 0 100 30" preserveAspectRatio="none"
+                        class="absolute bottom-0 left-0 w-full h-16 opacity-20 text-green-500 z-0">
+                        <polyline id="ram-chart" fill="none" class="stroke-current" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" points=""
+                            style="transition: all 0.5s ease-in-out;" />
+                    </svg>
+                </div>
+                <!-- Disk Card -->
+                <div class="card flex flex-col justify-between border-l-4 border-l-yellow-500 relative overflow-hidden">
+                    <div class="flex items-center gap-3 text-yellow-500 mb-2 z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                            </path>
+                        </svg>
+                        <span class="font-semibold text-gray-700 dark:text-gray-300" data-i18n="DiskUsage">Disk
+                            Capacity</span>
+                    </div>
+                    <div id="disk-val"
+                        class="text-3xl font-bold text-gray-900 dark:text-white mt-1 z-10 transition-colors duration-500">
+                        42.5%</div>
+                    <div id="disk-desc" class="text-sm text-gray-500 dark:text-gray-400 font-mono mt-1 z-10">212.50 GB /
+                        500.00 GB</div>
+                </div>
+                <!-- Network Card -->
+                <div class="card flex flex-col justify-between border-l-4 border-l-purple-500 relative overflow-hidden">
+                    <div class="flex items-center gap-3 text-purple-500 mb-2 z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 019-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9">
+                            </path>
+                        </svg>
+                        <span class="font-semibold text-gray-700 dark:text-gray-300">Network IO</span>
+                    </div>
+                    <div class="mt-2 space-y-2 z-10 w-full">
+                        <div
+                            class="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 p-2 rounded relative overflow-hidden">
+                            <span class="text-xs text-gray-500 uppercase font-semibold flex items-center gap-1 z-10">
+                                <svg class="w-3 h-3 text-green-500 z-10" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                                <span data-i18n="NetworkRx">Network (Rx)</span>
+                            </span>
+                            <span id="netrx-val"
+                                class="font-mono text-sm font-semibold dark:text-gray-200 z-10 transition-colors duration-500">0.00
+                                KB/s</span>
+                            <svg viewBox="0 0 100 30" preserveAspectRatio="none"
+                                class="absolute bottom-0 left-0 w-full h-full opacity-20 text-green-500 z-0">
+                                <polyline id="netrx-chart" fill="none" class="stroke-current" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" points=""
+                                    style="transition: all 0.5s ease-in-out;" />
+                            </svg>
+                        </div>
+                        <div
+                            class="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 p-2 rounded relative overflow-hidden">
+                            <span class="text-xs text-gray-500 uppercase font-semibold flex items-center gap-1 z-10">
+                                <svg class="w-3 h-3 text-blue-500 z-10" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                </svg>
+                                <span data-i18n="NetworkTx">Network (Tx)</span>
+                            </span>
+                            <span id="nettx-val"
+                                class="font-mono text-sm font-semibold dark:text-gray-200 z-10 transition-colors duration-500">0.00
+                                KB/s</span>
+                            <svg viewBox="0 0 100 30" preserveAspectRatio="none"
+                                class="absolute bottom-0 left-0 w-full h-full opacity-20 text-blue-500 z-0">
+                                <polyline id="nettx-chart" fill="none" class="stroke-current" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" points=""
+                                    style="transition: all 0.5s ease-in-out;" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTOMATION VIEW -->
+        <div id="view-automation" class="view-section max-w-4xl mx-auto">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold" data-i18n="Automation">Automation</h2>
+            </div>
+            <div
+                class="card bg-gray-50 dark:bg-darkcard border border-blue-500/20 mb-8 p-4 flex gap-4 text-sm text-blue-800 dark:text-blue-300">
+                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p><strong data-i18n="GuardrailsDesc">Guardrails & Safety Actions...</strong></p>
+            </div>
+
+            <div class="card border border-gray-200 dark:border-gray-800 shadow-sm relative overflow-visible mb-10">
+                <h3 class="text-lg font-semibold mb-4 pb-2 border-b border-gray-100 dark:border-gray-800"
+                    data-i18n="CreateRule">Create New Metric Rule</h3>
+                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                    onsubmit="event.preventDefault(); showToast('Simulated Automation Logic Saved!', 'success');">
+                    <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            data-i18n="TargetMetric">Target Metric</label>
+                        <select class="input-field mt-1 w-full">
+                            <option value="CPU">CPU Usage (%)</option>
+                            <option value="RAM">RAM Usage (%)</option>
+                            <option value="Disk">Disk Capacity (%)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            data-i18n="OperatorLabel">Logic Operator</label>
+                        <select class="input-field mt-1 w-full">
+                            <option value=">" data-i18n="OpGreater">Greater Than (>)</option>
+                            <option value="<" data-i18n="OpLess">Less Than (<)< /option>
+                            <option value="==" data-i18n="OpEqual">Equals (==)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                            data-i18n="ThresholdPct">Threshold (%)</label>
+                        <input type="number" step="0.1" value="90.5" class="input-field mt-1 w-full">
+                    </div>
+                    <div class="lg:col-span-3">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 flex justify-between">
+                            <span data-i18n="ShellCmd">Execute Shell Command</span>
+                            <span class="text-xs text-gray-500 font-normal" data-i18n="Optional">Optional</span>
+                        </label>
+                        <select onchange="document.getElementById('cmd_input').value=this.value; this.selectedIndex=0;"
+                            class="w-full text-sm p-2 mt-1 mb-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-shadow">
+                            <option value="" disabled selected data-i18n="SelectPreset">-- Select a safe preset template
+                                --</option>
+                            <option value="docker stop $(docker ps -q)" data-i18n="PresetDockerStop">Halt all Docker
+                            </option>
+                            <option value="sync; echo 1 > /proc/sys/vm/drop_caches" data-i18n="PresetClearCache">Clear
+                                Cache</option>
+                        </select>
+                        <input type="text" id="cmd_input" class="input-field font-mono text-sm w-full"
+                            placeholder="e.g. docker stop $(docker ps -q)">
+                    </div>
+                    <div class="lg:col-span-3">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 flex justify-between">
+                            <span data-i18n="MessageTemplate">Custom Message Template</span>
+                        </label>
+                        <textarea id="msg_template" rows="2" class="input-field font-mono text-sm resize-y w-full"
+                            placeholder="[ZeroStat-Go] {hostname} Warning: {metric} is {value}%!"></textarea>
+
+                        <div
+                            class="mt-4 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <p class="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2"
+                                data-i18n="TagLegendTitle">Tag Legend</p>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono text-gray-500 dark:text-gray-400">
+                                <div><span class="text-indigo-500 font-bold">{hostname}</span> - <span
+                                        data-i18n="TagHostname">Server Hostname</span></div>
+                                <div><span class="text-indigo-500 font-bold">{metric}</span> - <span
+                                        data-i18n="TagMetric">Monitored Metric</span></div>
+                                <div><span class="text-indigo-500 font-bold">{value}</span> - <span
+                                        data-i18n="TagValue">Current Actual Value</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3 pt-4 flex justify-end">
+                        <button type="submit" class="btn-primary w-full md:w-auto shadow-lg shadow-blue-500/20 px-8"
+                            data-i18n="AddRule">Add Rule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SETTINGS VIEW -->
+        <div id="view-settings" class="view-section max-w-2xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold" data-i18n="Settings">Settings</h2>
+            </div>
+            <div class="card">
+                <h3 class="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-4 mb-6"
+                    data-i18n="Configuration">Configuration</h3>
+
+                <form class="space-y-6"
+                    onsubmit="event.preventDefault(); showToast(i18nData[currentLang].SettingsSaved || 'Settings Saved', 'success');">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 leading-relaxed">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                data-i18n="AppPort">Application Port</label>
+                            <input type="number" value="9124" class="input-field shadow-sm w-full">
+                            <p class="text-xs text-gray-500 mt-1 pl-1" data-i18n="PortRestartNote">Changes take effect
+                                on restart</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                data-i18n="AdminPassword">Admin Password</label>
+                            <input type="password" placeholder="••••••••" class="input-field shadow-sm w-full">
+                            <p class="text-xs text-gray-500 mt-1 pl-1" data-i18n="PasswordBlankNote">Leave blank to keep
+                                current</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                data-i18n="AppLocale">Language</label>
+                            <select id="lang-selector" class="input-field shadow-sm w-full"
+                                onchange="changeLanguage(this.value); showToast('Language Changed to ' + this.options[this.selectedIndex].text, 'info');">
+                                <option value="en">English</option>
+                                <option value="tr">Türkçe</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border-t border-gray-100 dark:border-gray-800 pt-6">
+                        <h3
+                            class="text-lg font-semibold border-b border-gray-100 dark:border-gray-800 pb-3 mb-2 text-indigo-600 dark:text-indigo-400 flex items-center justify-between">
+                            <span data-i18n="NotificationConfig">Notification Configuration</span>
+                            <span class="text-xs font-normal text-gray-500" data-i18n="NotifConfigPreNote">Save settings
+                                first.</span>
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 leading-relaxed">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-i18n="TgBotToken">Telegram Bot Token</label>
+                                <button type="button"
+                                    onclick="showToast('Simulated: Telegram notification sent!', 'success')"
+                                    class="text-xs bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded transition">Test
+                                    Connection</button>
+                            </div>
+                            <input type="password" class="input-field shadow-sm w-full" placeholder="123456:ABC-DEF...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                data-i18n="TgChatId">Telegram Chat ID</label>
+                            <input type="text" class="input-field shadow-sm w-full" placeholder="-1234567890">
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    data-i18n="WebhookUrl">Webhook URL</label>
+                                <button type="button"
+                                    onclick="showToast('Simulated: Webhook Payload Executed!', 'success')"
+                                    class="text-xs bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded transition">Test
+                                    Connection</button>
+                            </div>
+                            <input type="url" class="input-field shadow-sm w-full"
+                                placeholder="https://endpoint.example.com/api/notify">
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+                        <button type="submit" class="btn-primary w-full md:w-auto shadow-lg shadow-blue-500/20 px-8"
+                            data-i18n="SaveSettings">Save Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Professional Developer Footer -->
+    <footer
+        class="w-full py-6 text-center text-sm text-gray-500 dark:text-gray-400 mt-auto shadow-inner bg-white/50 dark:bg-darkcard/50">
+        <a href="https://erysngl.github.io" target="_blank" rel="noopener noreferrer"
+            class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors tracking-wide font-bold">
+            ERYSNGL | Github
+        </a>
+    </footer>
+
+    <!-- JS LOGIC - SPA, SIMULATION & I18N -->
+    <script>
+        // --- 1. ROUTING LOGIC ---
+        function nav(sectionId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('view-' + sectionId).classList.add('active');
+            let navBtn = document.getElementById('nav-' + sectionId);
+            if (navBtn) navBtn.classList.add('active');
+        }
+
+        // --- 2. TRANSLATIONS ---
+        const i18nData = {
+            "en": {
+                "Dashboard": "Dashboard",
+                "Automation": "Automation",
+                "Settings": "Settings",
+                "Logout": "Logout",
+                "CPUUsage": "CPU Usage",
+                "RAMUsage": "RAM Usage",
+                "DiskUsage": "Disk Capacity",
+                "NetworkRx": "Network (Rx)",
+                "NetworkTx": "Network (Tx)",
+                "GuardrailsDesc": "Guardrails & Safety Actions: Define rules that trigger automatically when a metric breaches the threshold.",
+                "CreateRule": "Create New Metric Rule",
+                "TargetMetric": "Target Metric",
+                "OperatorLabel": "Logic Operator",
+                "OpGreater": "Greater Than (>)",
+                "OpLess": "Less Than (<)",
+                "OpEqual": "Equals (==)",
+                "ThresholdPct": "Threshold (%)",
+                "ShellCmd": "Execute Shell Command",
+                "Optional": "Optional",
+                "SelectPreset": "-- Select a safe preset template --",
+                "PresetDockerStop": "Halt all Docker",
+                "PresetClearCache": "Clear OS PageCache",
+                "MessageTemplate": "Custom Message Template",
+                "TagLegendTitle": "Tag Legend",
+                "TagHostname": "Server Hostname",
+                "TagMetric": "Monitored Metric",
+                "TagValue": "Current Actual Value",
+                "AddRule": "Add Rule",
+                "Configuration": "Configuration",
+                "AppPort": "Application Port",
+                "PortRestartNote": "Changes take effect on restart",
+                "AdminPassword": "Admin Password",
+                "PasswordBlankNote": "Leave blank to keep current",
+                "AppLocale": "Language",
+                "NotificationConfig": "Notification Configuration",
+                "NotifConfigPreNote": "Save settings first, then test.",
+                "TgBotToken": "Telegram Bot Token",
+                "TgChatId": "Telegram Chat ID",
+                "WebhookUrl": "Webhook URL (POST)",
+                "SaveSettings": "Save Settings",
+                "SettingsSaved": "Settings saved successfully"
+            },
+            "tr": {
+                "Dashboard": "Gösterge Paneli",
+                "Automation": "Otomasyon",
+                "Settings": "Ayarlar",
+                "Logout": "Çıkış",
+                "CPUUsage": "CPU Kullanımı",
+                "RAMUsage": "RAM Kullanımı",
+                "DiskUsage": "Disk Kapasitesi",
+                "NetworkRx": "Ağ İndirme (Rx)",
+                "NetworkTx": "Ağ Yükleme (Tx)",
+                "GuardrailsDesc": "Güvenlik Önlemleri ve Komutlar: Bir metrik eşiği aştığında otomatik olarak tetiklenen kurallar tanımlayın.",
+                "CreateRule": "Yeni Metrik Kuralı Oluştur",
+                "TargetMetric": "Hedef Metrik",
+                "OperatorLabel": "Mantıksal Operatör",
+                "OpGreater": "Büyüktür (>)",
+                "OpLess": "Küçüktür (<)",
+                "OpEqual": "Eşittir (==)",
+                "ThresholdPct": "Eşik Değeri (%)",
+                "ShellCmd": "Kabuk (Shell) Komutu Çalıştır",
+                "Optional": "İsteğe Bağlı",
+                "SelectPreset": "-- Güvenli bir şablon seç --",
+                "PresetDockerStop": "Docker konteynerlerini durdur",
+                "PresetClearCache": "PageCache temizle",
+                "MessageTemplate": "Özel Mesaj Şablonu",
+                "TagLegendTitle": "Etiket Rehberi",
+                "TagHostname": "Sunucunuzun Adı",
+                "TagMetric": "İzlenen Kaynak",
+                "TagValue": "Anlık Değer",
+                "AddRule": "Kural Ekle",
+                "Configuration": "Konfigürasyon",
+                "AppPort": "Uygulama Portu",
+                "PortRestartNote": "Değişiklikler yeniden başlatıldığında geçerli olur",
+                "AdminPassword": "Yönetici Şifresi",
+                "PasswordBlankNote": "Mevcut şifreyi korumak için boş bırakın",
+                "AppLocale": "Dil",
+                "NotificationConfig": "Bildirim Yapılandırması",
+                "NotifConfigPreNote": "Önce ayarları kaydedin, ardından test edin.",
+                "TgBotToken": "Telegram Bot Token",
+                "TgChatId": "Telegram Sohbet ID",
+                "WebhookUrl": "Webhook URL (POST)",
+                "SaveSettings": "Ayarları Kaydet",
+                "SettingsSaved": "Ayarlar başarıyla kaydedildi"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function changeLanguage(langCode) {
+            currentLang = langCode;
+            document.documentElement.lang = langCode;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18nData[langCode] && i18nData[langCode][key]) {
+                    if (el.tagName === 'INPUT' && el.type === 'button') {
+                        el.value = i18nData[langCode][key];
+                    } else {
+                        el.innerText = i18nData[langCode][key];
+                    }
+                }
+            });
+        }
+
+        // --- 3. TOAST NOTIFICATIONS ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'bg-green-600' : 'bg-blue-600'}`;
+            // Inner HTML
+            toast.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            // Trigger animation frame
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- 4. ENGINE SIMULATION SIMILAR TO DASHBOARD ---
+        const historySize = 60, width = 100, height = 30;
+        const history = {
+            cpu: Array(historySize).fill(0), ram: Array(historySize).fill(45),
+            rx: Array(historySize).fill(0), tx: Array(historySize).fill(0)
+        };
+
+        function generateNextValue(current, min, max, maxDelta) {
+            let next = current + (Math.random() * maxDelta * 2) - maxDelta;
+            if (next < min) next = min;
+            if (next > max) next = max;
+            return next;
+        }
+
+        function buildSVGPoints(array, maxVal) {
+            let points = "";
+            const step = width / (historySize - 1);
+            for (let i = 0; i < historySize; i++) {
+                let val = array[i];
+                if (val > maxVal) val = maxVal;
+                if (val < 0) val = 0;
+                points += `${(i * step).toFixed(2)},${(height - (val / maxVal) * height).toFixed(2)} `;
+            }
+            return points;
+        }
+
+        let currentCPU = 12.5, currentRAM = 55.2, currentRx = 10.5, currentTx = 2.4;
+
+        setInterval(() => {
+            if (Math.random() > 0.95) currentCPU = 70 + Math.random() * 25;
+            else currentCPU = generateNextValue(currentCPU, 2, 40, 5);
+            currentRAM = generateNextValue(currentRAM, 45, 85, 0.5);
+            if (Math.random() > 0.8) {
+                currentRx = generateNextValue(currentRx, 50, 8000, 2000);
+                currentTx = generateNextValue(currentTx, 10, 400, 100);
+            } else {
+                currentRx = generateNextValue(currentRx, 0, 100, 15);
+                currentTx = generateNextValue(currentTx, 0, 50, 5);
+            }
+
+            history.cpu.shift(); history.cpu.push(currentCPU);
+            history.ram.shift(); history.ram.push(currentRAM);
+            history.rx.shift(); history.rx.push(currentRx);
+            history.tx.shift(); history.tx.push(currentTx);
+
+            document.getElementById('cpu-val').innerText = currentCPU.toFixed(1) + '%';
+            document.getElementById('ram-val').innerText = currentRAM.toFixed(1) + '%';
+            document.getElementById('ram-desc').innerText = ((currentRAM / 100) * 16).toFixed(2) + ' GB / 16.00 GB';
+            document.getElementById('netrx-val').innerText = currentRx.toFixed(2) + ' KB/s';
+            document.getElementById('nettx-val').innerText = currentTx.toFixed(2) + ' KB/s';
+
+            document.getElementById('cpu-chart').setAttribute('points', buildSVGPoints(history.cpu, 100));
+            document.getElementById('ram-chart').setAttribute('points', buildSVGPoints(history.ram, 100));
+            document.getElementById('netrx-chart').setAttribute('points', buildSVGPoints(history.rx, 5000));
+            document.getElementById('nettx-chart').setAttribute('points', buildSVGPoints(history.tx, 1000));
+        }, 2000);
+
+        // Initialize Default View
+        nav('dashboard');
+        changeLanguage('en');
+
+    </script>
+</body>
+
+</html>
