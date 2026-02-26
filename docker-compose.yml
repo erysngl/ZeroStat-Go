@@ -8,10 +8,12 @@ services:
     environment:
       - ZEROSTAT_PORT=${ZEROSTAT_PORT:-9124}
       - ZEROSTAT_PASSWORD=${ZEROSTAT_PASSWORD:-admin}
-    
+
     # Required to read accurate host statistics instead of isolating internal container metrics only
     pid: host
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - ./.env:/app/.env
+      - ./data:/app/data

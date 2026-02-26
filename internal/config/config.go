@@ -1,8 +1,10 @@
 package config
 
 import (
+	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -88,6 +90,8 @@ func Init() {
 			AlertRules: make([]AlertRule, 0),
 			Notif:      notif,
 		}
+
+		LoadRules(appConfig)
 	})
 }
 
@@ -218,4 +222,50 @@ func (c *Config) SaveEnv() {
 
 	godotenv.Write(envMap, ".env")
 	os.Chmod(".env", 0600)
+}
+
+func LoadRules(c *Config) {
+	if err := os.MkdirAll("data", 0755); err != nil {
+		log.Printf("Warning: failed to create data directory: %v", err)
+	}
+
+	filePath := filepath.Join("data", "rules.json")
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			log.Printf("Warning: failed to read %s: %v", filePath, err)
+		}
+		return
+	}
+
+	var rules []AlertRule
+	if err := json.Unmarshal(fileBytes, &rules); err != nil {
+		log.Printf("Warning: failed to parse %s: %v", filePath, err)
+		return
+	}
+
+	c.SetRules(rules)
+	log.Printf("Loaded %d rules from disk", len(rules))
+}
+
+func (c *Config) SaveRules() {
+	c.mu.RLock()
+	rules := make([]AlertRule, len(c.AlertRules))
+	copy(rules, c.AlertRules)
+	c.mu.RUnlock()
+
+	if err := os.MkdirAll("data", 0755); err != nil {
+		log.Printf("Warning: failed to create data directory: %v", err)
+	}
+
+	filePath := filepath.Join("data", "rules.json")
+	fileBytes, err := json.MarshalIndent(rules, "", "  ")
+	if err != nil {
+		log.Printf("Error marshaling rules: %v", err)
+		return
+	}
+
+	if err := os.WriteFile(filePath, fileBytes, 0644); err != nil {
+		log.Printf("Error writing rules to disk: %v", err)
+	}
 }

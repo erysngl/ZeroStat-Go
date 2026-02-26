@@ -90,6 +90,14 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - ./.env:/app/.env
+      - ./data:/app/data
+```
+
+Before starting, ensure you create an empty `.env` file and a `data` directory first to prevent Docker from misinterpreting the mounts:
+```bash
+touch .env
+mkdir data
 ```
 
 Then, launch the system and access your dashboard:
@@ -99,6 +107,16 @@ Then, launch the system and access your dashboard:
    docker-compose up -d
    ```
 2. Navigate to **http://localhost:9124** in your browser.
+
+### Data Persistence (Kalıcı Veri)
+
+ZeroStat-Go allows you to configure settings like your Port, Admin Password, and Telegram/Webhook credentials dynamically through the web UI's Settings panel, while your active rules are controlled through the Automation panel. 
+
+By mapping the `.env` file (`- ./.env:/app/.env`) and the `data/` directory (`- ./data:/app/data`) as shown in the docker-compose snippet, you enforce **Full Data Persistence**:
+1. **Application Settings:** Written instantly to `.env` upon save.
+2. **Automation Rules:** Instantly serialized to `data/rules.json` upon adding, deleting, or toggling conditions.
+
+Consequently, if your Docker container is updated, rebuilt, or deleted, **your settings and threshold configurations will not be lost**. They will be safely reloaded on boot.
 
 ### Method 2: Native Build
 

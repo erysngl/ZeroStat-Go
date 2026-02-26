@@ -90,6 +90,14 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - ./.env:/app/.env
+      - ./data:/app/data
+```
+
+Sistemi başlatmadan önce Docker'ın yanlışlıkla dizin oluşturmasını engellemek için boş bir `.env` dosyası ve bir `data` klasörü oluşturduğunuzdan emin olun:
+```bash
+touch .env
+mkdir data
 ```
 
 Ardından sistemi başlatın ve panele erişimi sağlayın:
@@ -99,6 +107,16 @@ Ardından sistemi başlatın ve panele erişimi sağlayın:
    docker-compose up -d
    ```
 2. Tarayıcınızdan **http://localhost:9124** adresine giderek panele erişin.
+
+### Kalıcı Veri (Data Persistence)
+
+ZeroStat-Go; Port, Yönetici Şifresi ve Telegram/Webhook kimlik bilgilerinizi web arayüzündeki Ayarlar (Settings) panelinden dinamik olarak yapılandırmanıza olanak tanır. Etkin kurallarınız ise Otomasyon (Automation) paneli üzerinden kontrol edilir.
+
+`docker-compose` örneğinde gösterildiği gibi `.env` dosyasını (`- ./.env:/app/.env`) ve `data/` dizinini (`- ./data:/app/data`) dışarıya bağlayarak **Tam Veri Kalıcılığını** sağlarsınız:
+1. **Uygulama Ayarları:** Ayarlar kaydedildiği anda anında `.env` dosyasına yazılır.
+2. **Otomasyon Kuralları:** Herhangi bir kural eklendiğinde, silindiğinde veya aktifliği değiştirildiğinde anında `data/rules.json` dosyasına işlenir.
+
+Bu sayede Docker konteyneriniz güncellenirse, yeniden oluşturulursa ya da silinirse **ayarlarınız ve tetikleyici kural yapılandırmalarınız kesinlikle kaybolmaz**. Sistem her yeniden başladığında güvenle tekrar diskten okunur.
 
 ### Yöntem 2: Doğrudan Cihaz Üzerinde Derleme (Native Build)
 
