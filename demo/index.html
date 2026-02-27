@@ -86,6 +86,7 @@
                 <div class="flex items-center gap-6">
                     <a onclick="nav('dashboard')" id="nav-dashboard" class="nav-link active"
                         data-i18n="Dashboard">Dashboard</a>
+                    <a onclick="nav('tasks')" id="nav-tasks" class="nav-link" data-i18n="Tasks">Tasks</a>
                     <a onclick="nav('automation')" id="nav-automation" class="nav-link"
                         data-i18n="Automation">Automation</a>
                     <a onclick="nav('settings')" id="nav-settings" class="nav-link" data-i18n="Settings">Settings</a>
@@ -222,6 +223,86 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- TASKS VIEW -->
+        <div id="view-tasks" class="view-section">
+            <div class="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h2 class="text-2xl font-bold" data-i18n="Tasks">Tasks</h2>
+                <div class="w-full md:w-1/3">
+                    <input type="search" placeholder="Search by command or PID..." class="input-field w-full text-sm">
+                </div>
+            </div>
+
+            <div class="card overflow-x-auto p-0 border-0 shadow-sm">
+                <table class="min-w-full text-left text-sm border-collapse rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                        <tr>
+                            <th class="px-4 py-3 font-semibold w-24">PID</th>
+                            <th class="px-4 py-3 font-semibold" data-i18n="User">User</th>
+                            <th class="px-4 py-3 font-semibold w-32">CPU %</th>
+                            <th class="px-4 py-3 font-semibold w-32">RAM %</th>
+                            <th class="px-4 py-3 font-semibold" data-i18n="Container">Container</th>
+                            <th class="px-4 py-3 font-semibold w-1/3" data-i18n="Command">Command</th>
+                            <th class="px-4 py-3 font-semibold text-right" data-i18n="Action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800" id="simulated-tasks-body">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <td class="px-4 py-3 font-mono text-gray-500">10532</td>
+                            <td class="px-4 py-3">root</td>
+                            <td class="px-4 py-3 font-mono text-blue-600 font-semibold" id="sim-cpu-1">45.2%</td>
+                            <td class="px-4 py-3 font-mono text-green-600 font-semibold">12.5%</td>
+                            <td class="px-4 py-3">
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                        </path>
+                                    </svg>
+                                    webapp-prod-1
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                                node server.js</td>
+                            <td class="px-4 py-3 text-right">
+                                <button onclick="simulateKill(this, 'Container webapp-prod-1 stopped')"
+                                    class="px-3 py-1 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-md"
+                                    data-i18n="StopContainer">Stop</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <td class="px-4 py-3 font-mono text-gray-500">2204</td>
+                            <td class="px-4 py-3">erysn</td>
+                            <td class="px-4 py-3 font-mono text-blue-600 font-semibold" id="sim-cpu-2">89.1%</td>
+                            <td class="px-4 py-3 font-mono text-green-600 font-semibold">4.2%</td>
+                            <td class="px-4 py-3"><span class="text-gray-400 text-xs">-</span></td>
+                            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                                python3 train_model.py</td>
+                            <td class="px-4 py-3 text-right">
+                                <button onclick="simulateKill(this, 'PID 2204 (python3) Terminated')"
+                                    class="px-3 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md"
+                                    data-i18n="KillProcess">Kill</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors shadow-sm">
+                            <td class="px-4 py-3 font-mono text-gray-500">1</td>
+                            <td class="px-4 py-3">root</td>
+                            <td class="px-4 py-3 font-mono text-blue-600 font-semibold">0.1%</td>
+                            <td class="px-4 py-3 font-mono text-green-600 font-semibold">0.5%</td>
+                            <td class="px-4 py-3"><span class="text-gray-400 text-xs">-</span></td>
+                            <td class="px-4 py-3 font-mono text-xs text-gray-600 dark:text-gray-300 truncate max-w-xs">
+                                /sbin/init</td>
+                            <td class="px-4 py-3 text-right">
+                                <button onclick="simulateKill(this, 'Access Denied: Cannot kill init', 'error')"
+                                    class="px-3 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md"
+                                    data-i18n="KillProcess">Kill</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -465,7 +546,9 @@
                 "TgChatId": "Telegram Chat ID",
                 "WebhookUrl": "Webhook URL (POST)",
                 "SaveSettings": "Save Settings",
-                "SettingsSaved": "Settings saved successfully"
+                "SettingsSaved": "Settings saved successfully",
+                "Execute": "Execute",
+                "Cancel": "Cancel"
             },
             "tr": {
                 "Dashboard": "Gösterge Paneli",
@@ -508,7 +591,9 @@
                 "TgChatId": "Telegram Sohbet ID",
                 "WebhookUrl": "Webhook URL (POST)",
                 "SaveSettings": "Ayarları Kaydet",
-                "SettingsSaved": "Ayarlar başarıyla kaydedildi"
+                "SettingsSaved": "Ayarlar başarıyla kaydedildi",
+                "Execute": "Uygula",
+                "Cancel": "İptal"
             }
         };
 
@@ -533,24 +618,26 @@
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `toast ${type === 'success' ? 'bg-green-600' : 'bg-blue-600'}`;
-            // Inner HTML
+            toast.className = `px-4 py-3 rounded-lg shadow-xl text-white font-medium flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+
             toast.innerHTML = `
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span>${message}</span>
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-sm shadow-sm">${message}</span>
             `;
             container.appendChild(toast);
 
-            // Trigger animation frame
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0');
+                    toast.classList.add('translate-x-0', 'opacity-100');
+                });
+            });
 
-            // Remove after 3 seconds
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            }, 3500);
         }
 
         // --- 4. ENGINE SIMULATION SIMILAR TO DASHBOARD ---
@@ -608,13 +695,99 @@
             document.getElementById('ram-chart').setAttribute('points', buildSVGPoints(history.ram, 100));
             document.getElementById('netrx-chart').setAttribute('points', buildSVGPoints(history.rx, 5000));
             document.getElementById('nettx-chart').setAttribute('points', buildSVGPoints(history.tx, 1000));
+
+            // Simulating process bumps
+            let cpu1 = 40 + Math.random() * 15;
+            let cpu2 = 85 + Math.random() * 14;
+            let el1 = document.getElementById('sim-cpu-1');
+            let el2 = document.getElementById('sim-cpu-2');
+            if (el1) el1.innerText = cpu1.toFixed(1) + '%';
+            if (el2) el2.innerText = cpu2.toFixed(1) + '%';
         }, 2000);
+
+        let currentSimulationAction = null;
+
+        function simulateKill(btn, msg, type = 'success') {
+            currentSimulationAction = { btn, msg, type };
+            document.getElementById('action-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('action-modal').classList.add('hidden');
+            currentSimulationAction = null;
+        }
+
+        document.getElementById('modal-confirm-btn').addEventListener('click', function () {
+            if (currentSimulationAction) {
+                const { btn, msg, type } = currentSimulationAction;
+                showToast(msg, type);
+                if (type === 'success') {
+                    btn.closest('tr').style.opacity = '0.3';
+                    btn.disabled = true;
+                }
+            }
+            closeModal();
+        });
 
         // Initialize Default View
         nav('dashboard');
         changeLanguage('en');
 
     </script>
+
+    <!-- Confirmation Modal and Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <div id="action-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background Overlay -->
+            <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80 backdrop-blur-sm"
+                aria-hidden="true" onclick="closeModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal Panel -->
+            <div
+                class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white dark:bg-darkcard rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-200 dark:border-gray-800">
+                <div class="px-4 pt-5 pb-4 bg-white dark:bg-darkcard sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-red-100 dark:bg-red-900/30 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100" id="modal-title"
+                                data-i18n="ConfirmAction">Confirm Action</h3>
+                            <div class="mt-2 text-sm text-gray-500 dark:text-gray-400" id="modal-desc"
+                                data-i18n="AreYouSure">
+                                Are you sure you want to execute this destructive action?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="modal-confirm-btn"
+                        class="inline-flex items-center justify-center gap-2 w-full px-4 py-2 text-base font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span data-i18n="Execute">Execute</span>
+                    </button>
+                    <button type="button" onclick="closeModal()"
+                        class="inline-flex items-center justify-center gap-2 w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span data-i18n="Cancel">Cancel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

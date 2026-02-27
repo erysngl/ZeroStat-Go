@@ -17,7 +17,7 @@
 
 ## Overview
 
-**ZeroStat-Go** is a high-performance, minimalist server resource dashboard engineered for maximum efficiency. It completely eschews heavy JavaScript frameworks in favor of Go, HTMX, and Tailwind CSS, providing real-time infrastructure visibility with an incredibly tiny footprint.
+**ZeroStat-Go** is a high-performance, minimalist server resource dashboard engineered for maximum efficiency. It completely eschews heavy JavaScript frameworks in favor of Go, HTMX, and Tailwind CSS, providing real-time infrastructure visibility with an incredibly tiny footprint. It doesn't just monitor, it intervenes.
 
 Monitor your **CPU, Memory, Disk capacity, and active Network I/O (in precise KB/s)** without taxing the hardware you are trying to observe.
 
@@ -25,6 +25,7 @@ Monitor your **CPU, Memory, Disk capacity, and active Network I/O (in precise KB
 
 - **Blazing Fast Backend:** Powered by a statically compiled Go binary utilizing `gopsutil`.
 - **Zero-JS-Framework Frontend:** Binds Go templating directly to **HTMX** for seamless, partial-page updates.
+- **Active Task Manager:** Monitor host processes and their mapped Docker containers in real-time. Instantly intervene by killing rogue processes or halting resource-hogging containers natively from the UI.
 - **Dynamic Theming:** Built-in Light and Dark mode toggles leveraging Tailwind CSS.
 - **Secure Access:** Robust session-based authentication guarding your metrics layer.
 - **KB/s Network Tracking:** Live Rx/Tx network speed tracking scaled dynamically.
@@ -90,6 +91,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - /var/run/docker.sock:/var/run/docker.sock # Recommended for System Management
       - ./.env:/app/.env
       - ./data:/app/data
 ```
@@ -99,6 +101,9 @@ Before starting, ensure you create an empty `.env` file and a `data` directory f
 touch .env
 mkdir data
 ```
+
+**⚠️ CRITICAL MOUNTS FOR TASK MANAGER:** 
+To enable the **Active Task Manager** to accurately read host process CPU/RAM statistics and pinpoint precisely which Docker container a process belongs to, **you MUST include both `- /proc:/host/proc:ro` and `- /var/run/docker.sock:/var/run/docker.sock`** in your volume binds.
 
 Then, launch the system and access your dashboard:
 

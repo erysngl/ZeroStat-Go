@@ -52,13 +52,14 @@
         class="w-full bg-white/80 dark:bg-darkcard/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-2">
+                <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <img src="/static/img/logo-light.svg" alt="ZeroStat Logo" class="w-8 h-8 block dark:hidden">
                     <img src="/static/img/logo-dark.svg" alt="ZeroStat Logo" class="w-8 h-8 hidden dark:block">
                     <span class="font-bold text-xl tracking-tight">ZeroStat-Go</span>
-                </div>
+                </a>
                 <div class="flex items-center gap-6">
                     <a href="/" class="nav-link">{{ call .T "Dashboard" }}</a>
+                    <a href="/tasks" class="nav-link">{{ call .T "Tasks" }}</a>
                     <a href="/automation" class="nav-link">{{ call .T "Automation" }}</a>
                     <a href="/settings" class="nav-link">{{ call .T "Settings" }}</a>
                     <a href="/logout" class="nav-link text-red-500 hover:text-red-600">{{ call .T "Logout" }}</a>
@@ -81,6 +82,37 @@
         </a>
     </footer>
 
+    <!-- Toast Notification Container (Top Right) -->
+    <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `px-4 py-3 rounded-lg shadow-xl text-white font-medium flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+
+            toast.innerHTML = `
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-sm shadow-sm">${message}</span>
+            `;
+            container.appendChild(toast);
+
+            // Trigger enter animation
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-x-full', 'opacity-0');
+                    toast.classList.add('translate-x-0', 'opacity-100');
+                });
+            });
+
+            // Remove after 3.5 seconds
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
 </body>
 
 </html>

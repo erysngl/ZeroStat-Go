@@ -51,6 +51,11 @@ func main() {
 	mux.HandleFunc("/automation/add", auth.Middleware(handlers.AddAutomationRule))
 	mux.HandleFunc("/automation/toggle", auth.Middleware(handlers.ToggleAutomationRule))
 	mux.HandleFunc("/automation/delete", auth.Middleware(handlers.DeleteAutomationRule))
+	
+	mux.HandleFunc("/tasks", auth.Middleware(handlers.ServeTasks))
+	mux.HandleFunc("/tasks/list", auth.Middleware(handlers.ServeTasksList))
+	mux.HandleFunc("/tasks/kill", auth.Middleware(handlers.HandleKillProcess))
+	mux.HandleFunc("/tasks/stop_container", auth.Middleware(handlers.HandleStopContainer))
 
 	server := &http.Server{
 		Addr:         ":" + port,

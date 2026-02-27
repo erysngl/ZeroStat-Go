@@ -17,7 +17,7 @@
 
 ## Genel Bakış
 
-**ZeroStat-Go**, maksimum verimlilik için tasarlanmış yüksek performanslı, minimalist bir sunucu kaynak izleme panelidir. Ağır JavaScript frameworklerini tamamen es geçerek Go, HTMX ve Tailwind CSS kullanır. Altyapınızı izlerken sisteme yok denecek kadar az yük bindirip gerçek zamanlı görünürlük sağlar.
+**ZeroStat-Go**, maksimum verimlilik için tasarlanmış yüksek performanslı, minimalist bir sunucu kaynak izleme panelidir. Ağır JavaScript frameworklerini tamamen es geçerek Go, HTMX ve Tailwind CSS kullanır. Altyapınızı izlerken sisteme yok denecek kadar az yük bindirip gerçek zamanlı görünürlük sağlar. Sadece izlemez, müdahale eder.
 
 **CPU, RAM Bellek, Disk kapasitesi ve aktif Ağ I/O (kesin KB/s bazında)** kullanımınızı, sunucunuzu yormadan kolaylıkla izleyin.
 
@@ -25,6 +25,7 @@
 
 - **Işık Hızında Backend:** `gopsutil` kullanan, statik olarak derlenmiş hafif bir Go altyapısıyla çalışır.
 - **Sıfır JS-Framework Frontend:** Kesintisiz, anlık kısmi sayfa güncellemeleri için Go template sistemini doğrudan **HTMX**'e bağlar.
+- **Aktif Görev Yöneticisi:** Sistem genelindeki süreçleri ve bunların hangi Docker konteynırına ait olduğunu anlık takip edin. Gereksiz kaynak tüketen süreçleri veya konteynırları arayüzden tek tıkla durdurarak anında müdahale edin.
 - **Dinamik Tema:** Tailwind CSS'ten gücünü alan yerleşik Aydınlık (Light) ve Karanlık (Dark) mod geçişleri.
 - **Güvenli Erişim:** Metriklerinizi koruyan, oturum (Session) tabanlı sağlam bir kimlik doğrulama sistemi.
 - **KB/s Ağ İzleme:** Gerçek zamanlı indirme(Rx)/yükleme(Tx) ağ hızlarını dinamik olarak ölçeklendirerek anında gösterir.
@@ -90,6 +91,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - /var/run/docker.sock:/var/run/docker.sock # Sistem Yönetimi İçin Tavsiye Edilen
       - ./.env:/app/.env
       - ./data:/app/data
 ```
@@ -99,6 +101,9 @@ Sistemi başlatmadan önce Docker'ın yanlışlıkla dizin oluşturmasını enge
 touch .env
 mkdir data
 ```
+
+**⚠️ GÖREV YÖNETİCİSİ İÇİN KRİTİK BAĞLANTILAR (MOUNTS):** 
+**Aktif Görev Yöneticisi** özelliğinin, ana sisteminizdeki işlem (proses) CPU/RAM istatistiklerini doğru okuyabilmesi ve süreçlerin hangi Docker konteynerine ait olduğunu tam olarak bulabilmesi için, volume yapılandırmanızda **hem `- /proc:/host/proc:ro` hem de `- /var/run/docker.sock:/var/run/docker.sock` ayarlarının DAHİL EDİLMESİ ŞARTTIR.**
 
 Ardından sistemi başlatın ve panele erişimi sağlayın:
 

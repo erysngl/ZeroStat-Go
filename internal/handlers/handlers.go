@@ -26,7 +26,7 @@ var (
 // InitTemplates parses templates per page to avoid block name collisions
 func InitTemplates() {
 	tmplCache = make(map[string]*template.Template)
-	pages := []string{"login.html", "dashboard.html", "settings.html", "stats.html", "automation.html"}
+	pages := []string{"login.html", "dashboard.html", "settings.html", "stats.html", "automation.html", "tasks.html"}
 
 	base := filepath.Join("templates", "base.html")
 	stats := filepath.Join("templates", "stats.html")

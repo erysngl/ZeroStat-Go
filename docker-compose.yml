@@ -15,5 +15,6 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/host/root:ro
+      - /var/run/docker.sock:/var/run/docker.sock # Recommended for System Management
       - ./.env:/app/.env
       - ./data:/app/data
