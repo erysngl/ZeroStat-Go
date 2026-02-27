@@ -199,10 +199,7 @@ func GetProcesses(query string, sortBy string, sortDir string) []ProcessInfo {
 			hasContainerJ := results[j].ContainerName != "" || results[j].ContainerID != ""
 			
 			if hasContainerI != hasContainerJ {
-				if asc {
-					return hasContainerI // containers first
-				}
-				return hasContainerJ // non-containers first
+				return hasContainerI // Always containers first, regardless of asc/desc order
 			}
 			// Both have containers or both don't, sort alphabetically
 			if asc {
