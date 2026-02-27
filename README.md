@@ -9,8 +9,9 @@
   <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker" alt="Docker Ready" />
 </div>
 
-<h1 align="center">ZeroStat-Go</h1>
-
+<h1 align="center">
+  <img src="static/img/logo-dark.svg" alt="Logo" width="48" /> ZeroStat-Go
+</h1>
 <p align="center">
   <strong>Ultra-Lightweight System & Network Dashboard</strong>
 </p>
@@ -20,6 +21,11 @@
 **ZeroStat-Go** is a high-performance, minimalist server resource dashboard engineered for maximum efficiency. It completely eschews heavy JavaScript frameworks in favor of Go, HTMX, and Tailwind CSS, providing real-time infrastructure visibility with an incredibly tiny footprint. It doesn't just monitor, it intervenes.
 
 Monitor your **CPU, Memory, Disk capacity, and active Network I/O (in precise KB/s)** without taxing the hardware you are trying to observe.
+
+## Demo
+
+Experience a live preview of the ZeroStat-Go dashboard interface without running a server:
+👉 [**Launch Live Demo**](https://erysngl.github.io/ZeroStat-Go/demo/index.html)
 
 ## Key Features
 

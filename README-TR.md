@@ -9,8 +9,9 @@
   <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker" alt="Docker Uyumlu" />
 </div>
 
-<h1 align="center">ZeroStat-Go</h1>
-
+<h1 align="center">
+  <img src="static/img/logo-dark.svg" alt="Logo" width="48" /> ZeroStat-Go
+</h1>
 <p align="center">
   <strong>Ultra Hafif Sistem ve Ağ Gösterge Paneli</strong>
 </p>
@@ -20,6 +21,11 @@
 **ZeroStat-Go**, maksimum verimlilik için tasarlanmış yüksek performanslı, minimalist bir sunucu kaynak izleme panelidir. Ağır JavaScript frameworklerini tamamen es geçerek Go, HTMX ve Tailwind CSS kullanır. Altyapınızı izlerken sisteme yok denecek kadar az yük bindirip gerçek zamanlı görünürlük sağlar. Sadece izlemez, müdahale eder.
 
 **CPU, RAM Bellek, Disk kapasitesi ve aktif Ağ I/O (kesin KB/s bazında)** kullanımınızı, sunucunuzu yormadan kolaylıkla izleyin.
+
+## Demo
+
+Sunucu kurmadan ZeroStat-Go panelinin işleyişini inceleyebileceğiniz canlı tasarım önizlemesi:
+👉 [**Canlı Demoyu Başlat**](https://erysngl.github.io/ZeroStat-Go/demo/index.html)
 
 ## Temel Özellikler
 
