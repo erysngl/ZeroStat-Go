@@ -1,2 +1,2 @@
 demo/*.html linguist-vendored
-static/assets/* linguist-vendored
+templates/tasks.html linguist-vendored
