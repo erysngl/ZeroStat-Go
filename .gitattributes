@@ -1,1 +1,2 @@
-templates/*.html linguist-vendored
+demo/*.html linguist-vendored
+static/assets/* linguist-vendored
