@@ -16,6 +16,12 @@
   <strong>Ultra-Lightweight System & Network Dashboard</strong>
 </p>
 
+<img width="1919" height="923" alt="screnshot (2)" src="https://github.com/user-attachments/assets/94ec2498-f73f-4733-8fb0-afb35bf54d87" />
+<br> <div align="center">
+  <img width="49%" alt="screnshot (1)" src="https://github.com/user-attachments/assets/6daa21f7-c36c-464b-a1f1-4e2fdf0ec5ad" />
+  <img width="49%" alt="screnshot (3)" src="https://github.com/user-attachments/assets/23d0b7c2-6822-41c9-a9f0-dd6d7410b2f5" />
+</div>
+
 ## Overview
 
 **ZeroStat-Go** is a high-performance, minimalist server resource dashboard engineered for maximum efficiency. It completely eschews heavy JavaScript frameworks in favor of Go, HTMX, and Tailwind CSS, providing real-time infrastructure visibility with an incredibly tiny footprint. It doesn't just monitor, it intervenes.
