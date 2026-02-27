@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZeroStat-Go - Live Premium Demo SPA</title>
+    <link rel="icon" type="image/svg+xml" href="../static/img/logo-dark.svg">
     <!-- Basic Tailwind from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -78,10 +79,8 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-2" onclick="nav('dashboard')" style="cursor: pointer;">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+                    <img src="../static/img/logo-light.svg" alt="ZeroStat Logo" class="w-8 h-8 block dark:hidden">
+                    <img src="../static/img/logo-dark.svg" alt="ZeroStat Logo" class="w-8 h-8 hidden dark:block">
                     <span class="font-bold text-xl tracking-tight">ZeroStat-Go</span>
                 </div>
                 <div class="flex items-center gap-6">

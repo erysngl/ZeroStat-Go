@@ -71,6 +71,11 @@ func Init() {
 			password = "admin" // Default for local testing
 		}
 
+		locale := os.Getenv("APP_LANGUAGE")
+		if locale == "" {
+			locale = "en"
+		}
+
 		notif := NotificationConfig{
 			TgBotToken: os.Getenv("TG_BOT_TOKEN"),
 			TgChatId:   os.Getenv("TG_CHAT_ID"),
@@ -86,7 +91,7 @@ func Init() {
 			Port:       port,
 			Password:   password,
 			Theme:      "dark", // default theme
-			Locale:     "en",   // default locale
+			Locale:     locale,   
 			AlertRules: make([]AlertRule, 0),
 			Notif:      notif,
 		}
@@ -210,6 +215,7 @@ func (c *Config) SaveEnv() {
 	envMap := map[string]string{
 		"ZEROSTAT_PORT":     c.Port,
 		"ZEROSTAT_PASSWORD": c.Password,
+		"APP_LANGUAGE":      c.Locale,
 		"TG_BOT_TOKEN":      c.Notif.TgBotToken,
 		"TG_CHAT_ID":        c.Notif.TgChatId,
 		"WEBHOOK_URL":       c.Notif.WebhookUrl,
