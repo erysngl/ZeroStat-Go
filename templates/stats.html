@@ -63,7 +63,13 @@
         .Data.DiskPct }}</div>
     <div id="disk-desc" hx-swap-oob="true" class="text-sm text-gray-500 dark:text-gray-400 font-mono mt-1 z-10">{{
         .Data.Disk }}</div>
-    <!-- Disk intentionally skips charts as capacity rarely fluctuates like waves -->
+
+    <!-- Disk Progress Bar -->
+    <div class="w-full bg-gray-200 rounded-full h-1.5 mt-4 dark:bg-gray-700 z-10">
+        <div id="disk-bar" hx-swap-oob="true"
+            class="{{ .Data.DiskColor }} h-1.5 rounded-full transition-all duration-500"
+            style="width: {{ .Data.DiskPct }}"></div>
+    </div>
 </div>
 
 <!-- Network Card -->

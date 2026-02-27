@@ -78,7 +78,11 @@ func GetStats() *SystemStats {
 	if err == nil {
 		stats.DiskTotal = d.Total
 		stats.DiskUsed = d.Used
-		stats.DiskUsage = d.UsedPercent
+		if d.Total > 0 {
+			stats.DiskUsage = (float64(d.Used) / float64(d.Total)) * 100
+		} else {
+			stats.DiskUsage = 0
+		}
 	}
 
 	// Network
@@ -166,6 +170,7 @@ type FormattedStats struct {
 	MemPct       string
 	Disk         string
 	DiskPct      string
+	DiskColor    string
 	NetRx        string
 	NetTx        string
 	CPUPoints    string
@@ -177,6 +182,13 @@ type FormattedStats struct {
 func GetFormatted() FormattedStats {
 	s := GetStats()
 	
+	diskColor := "bg-green-500"
+	if s.DiskUsage >= 90 {
+		diskColor = "bg-red-500"
+	} else if s.DiskUsage >= 70 {
+		diskColor = "bg-yellow-500"
+	}
+
 	// Pre-generate SVG points for 100x30 default viewboxes
 	return FormattedStats{
 		CPU:      fmt.Sprintf("%.1f%%", s.CPUUsage),
@@ -185,6 +197,7 @@ func GetFormatted() FormattedStats {
 		MemPct:   fmt.Sprintf("%.1f%%", s.MemUsage),
 		Disk:     fmt.Sprintf("%.2f GB / %.2f GB", formatMB(s.DiskUsed)/1024, formatMB(s.DiskTotal)/1024),
 		DiskPct:  fmt.Sprintf("%.1f%%", s.DiskUsage),
+		DiskColor: diskColor,
 		NetRx:    fmt.Sprintf("%.2f KB/s", s.NetRxSpeed),
 		NetTx:    fmt.Sprintf("%.2f KB/s", s.NetTxSpeed),
 		CPUPoints: GeneratePoints(100, 30, 100, func(st *SystemStats) float64 { return st.CPUUsage }),

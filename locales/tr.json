@@ -8,7 +8,7 @@
     "Logout": "Çıkış",
     "CPUUsage": "CPU Kullanımı",
     "RAMUsage": "RAM Kullanımı",
-    "DiskUsage": "Disk Kapasitesi",
+    "DiskUsage": "Disk Kullanımı",
     "NetworkRx": "Ağ İndirme (Rx)",
     "NetworkTx": "Ağ Yükleme (Tx)",
     "Configuration": "Konfigürasyon",
@@ -99,7 +99,7 @@
     "NextPage": "Sonraki",
     "LiveTracking": "Canlı Takip",
     "RefreshNow": "Yenile",
-    "ActionSuccess": "İşlem başarıyla gerçekleştirildi.",
     "Page": "Sayfa",
-    "ShortLivedSystem": "Sistem / Kısa Süreli"
+    "ShortLivedSystem": "Sistem / Kısa Süreli",
+    "ActionSuccess": "İşlem başarıyla gerçekleştirildi."
 }

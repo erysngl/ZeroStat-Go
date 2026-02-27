@@ -17,7 +17,16 @@ func ServeTasks(w http.ResponseWriter, r *http.Request) {
 
 func ServeTasksList(w http.ResponseWriter, r *http.Request) {
 	query := r.FormValue("query")
-	procs := process.GetProcesses(query)
+	sortBy := r.FormValue("sort_by")
+	if sortBy == "" {
+		sortBy = "cpu"
+	}
+	sortDir := r.FormValue("sort_dir")
+	if sortDir == "" {
+		sortDir = "desc"
+	}
+
+	procs := process.GetProcesses(query, sortBy, sortDir)
 
 	pageStr := r.FormValue("page")
 	page := 1
@@ -25,7 +34,7 @@ func ServeTasksList(w http.ResponseWriter, r *http.Request) {
 		page = p
 	}
 
-	limit := 10
+	limit := 15
 	total := len(procs)
 	totalPages := (total + limit - 1) / limit
 
@@ -47,12 +56,32 @@ func ServeTasksList(w http.ResponseWriter, r *http.Request) {
 		slicedProcs = procs[start:end]
 	}
 
+	var pages []int
+	startPage := page - 2
+	if startPage < 1 {
+		startPage = 1
+	}
+	endPage := startPage + 4
+	if endPage > totalPages {
+		endPage = totalPages
+		startPage = endPage - 4
+		if startPage < 1 {
+			startPage = 1
+		}
+	}
+	for i := startPage; i <= endPage; i++ {
+		pages = append(pages, i)
+	}
+
 	data := getBaseData()
 	data.Data = struct {
 		Processes  []process.ProcessInfo
 		Query      string
+		SortBy     string
+		SortDir    string
 		Page       int
 		TotalPages int
+		Pages      []int
 		HasPrev    bool
 		HasNext    bool
 		PrevPage   int
@@ -60,8 +89,11 @@ func ServeTasksList(w http.ResponseWriter, r *http.Request) {
 	}{
 		Processes:  slicedProcs,
 		Query:      query,
+		SortBy:     sortBy,
+		SortDir:    sortDir,
 		Page:       page,
 		TotalPages: totalPages,
+		Pages:      pages,
 		HasPrev:    page > 1,
 		HasNext:    page < totalPages,
 		PrevPage:   page - 1,

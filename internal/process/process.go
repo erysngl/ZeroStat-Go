@@ -121,7 +121,7 @@ func truncateID(id string) string {
 }
 
 // GetProcesses fetches active processes and filters via query
-func GetProcesses(query string) []ProcessInfo {
+func GetProcesses(query string, sortBy string, sortDir string) []ProcessInfo {
 	query = strings.ToLower(query)
 	cmap := GetContainersMap()
 
@@ -179,12 +179,60 @@ func GetProcesses(query string) []ProcessInfo {
 		})
 	}
 
-	// Sort by CPU descending, then by RAM descending if CPU is identical
+	// Dynamic Sorting
 	sort.Slice(results, func(i, j int) bool {
-		if results[i].CPU == results[j].CPU {
+		asc := sortDir == "asc"
+		switch sortBy {
+		case "pid":
+			if asc {
+				return results[i].PID < results[j].PID
+			}
+			return results[i].PID > results[j].PID
+		case "user":
+			if asc {
+				return results[i].User < results[j].User
+			}
+			return results[i].User > results[j].User
+		case "container":
+			// Special logic for container
+			hasContainerI := results[i].ContainerName != "" || results[i].ContainerID != ""
+			hasContainerJ := results[j].ContainerName != "" || results[j].ContainerID != ""
+			
+			if hasContainerI != hasContainerJ {
+				if asc {
+					return hasContainerI // containers first
+				}
+				return hasContainerJ // non-containers first
+			}
+			// Both have containers or both don't, sort alphabetically
+			if asc {
+				return results[i].ContainerName < results[j].ContainerName
+			}
+			return results[i].ContainerName > results[j].ContainerName
+		case "command":
+			if asc {
+				return results[i].Command < results[j].Command
+			}
+			return results[i].Command > results[j].Command
+		case "ram":
+			if asc {
+				return results[i].RAM < results[j].RAM
+			}
 			return results[i].RAM > results[j].RAM
+		case "cpu":
+			fallthrough
+		default:
+			if results[i].CPU == results[j].CPU {
+				if asc {
+					return results[i].RAM < results[j].RAM
+				}
+				return results[i].RAM > results[j].RAM
+			}
+			if asc {
+				return results[i].CPU < results[j].CPU
+			}
+			return results[i].CPU > results[j].CPU
 		}
-		return results[i].CPU > results[j].CPU
 	})
 
 	// Limit to top 150 for ui rendering perf

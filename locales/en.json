@@ -8,7 +8,7 @@
 	"Logout": "Logout",
 	"CPUUsage": "CPU Usage",
 	"RAMUsage": "RAM Usage",
-	"DiskUsage": "Disk Capacity",
+	"DiskUsage": "Disk Usage",
 	"NetworkRx": "Network (Rx)",
 	"NetworkTx": "Network (Tx)",
 	"Configuration": "Configuration",
@@ -101,5 +101,6 @@
 	"RefreshNow": "Refresh Now",
 	"ActionSuccess": "Action executed successfully.",
 	"Page": "Page",
-	"ShortLivedSystem": "System / Short-Lived"
+	"ShortLivedSystem": "System / Short-Lived",
+	"ActionSuccess": "Action executed successfully."
 }
