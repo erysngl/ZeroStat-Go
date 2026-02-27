@@ -1,3 +1,4 @@
 .env
 *.log
 build_error.txt
+.gitignore
