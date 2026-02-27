@@ -103,7 +103,7 @@ mkdir data
 ```
 
 **⚠️ GÖREV YÖNETİCİSİ İÇİN KRİTİK BAĞLANTILAR (MOUNTS):** 
-**Aktif Görev Yöneticisi** özelliğinin, ana sisteminizdeki işlem (proses) CPU/RAM istatistiklerini doğru okuyabilmesi ve süreçlerin hangi Docker konteynerine ait olduğunu tam olarak bulabilmesi için, volume yapılandırmanızda **hem `- /proc:/host/proc:ro` hem de `- /var/run/docker.sock:/var/run/docker.sock` ayarlarının DAHİL EDİLMESİ ŞARTTIR.**
+**Aktif Görev Yöneticisi** özelliğinin, ana sisteminizdeki işlem (proses) CPU/RAM istatistiklerini doğru okuyabilmesi ve Linux ortamında süreçlerin hangi Docker konteynerine ait olduğunu tam olarak bulabilmesi için, **`pid: host` ayarının (Sistem süreçlerini görebilmek için şart) ve volume yapılandırmanızda hem `- /proc:/host/proc:ro` (Cgroup bilgilerini okumak için şart) hem de `- /var/run/docker.sock:/var/run/docker.sock` eklentilerinin DAHİL EDİLMESİ ŞARTTIR.**
 
 Ardından sistemi başlatın ve panele erişimi sağlayın:
 

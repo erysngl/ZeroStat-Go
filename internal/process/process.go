@@ -48,6 +48,7 @@ func GetContainersMap() map[string]string {
 	resp, err := client.Get("http://localhost/containers/json")
 	if err != nil {
 		// Socket not mounted or Docker dead
+		log.Printf("Docker Socket Error: Permission denied or unavailable. Ensure /var/run/docker.sock is mounted with appropriate permissions: %v", err)
 		return cmap
 	}
 	defer resp.Body.Close()
@@ -95,8 +96,8 @@ func getContainerIDFromCgroup(pid int32) string {
 		if err == nil {
 			content := string(data)
 			
-			// Priority: Match explicit Docker formats
-			explicitRegex := regexp.MustCompile(`(?:/docker/|/containers/|[a-f0-9]{8}-|docker-|containerd-)([a-f0-9]{64})`)
+			// Priority: Match explicit Docker / K8s formats
+			explicitRegex := regexp.MustCompile(`(?:/docker/|/kubepods[^/]*/|/containers/|[a-f0-9]{8}-|docker-|containerd-)([a-f0-9]{64})`)
 			match := explicitRegex.FindStringSubmatch(content)
 			if len(match) > 1 {
 				return truncateID(match[1])

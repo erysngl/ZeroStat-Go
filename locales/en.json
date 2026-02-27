@@ -100,5 +100,6 @@
 	"LiveTracking": "Live Tracking",
 	"RefreshNow": "Refresh Now",
 	"ActionSuccess": "Action executed successfully.",
-	"Page": "Page"
+	"Page": "Page",
+	"ShortLivedSystem": "System / Short-Lived"
 }
