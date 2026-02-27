@@ -113,7 +113,7 @@ Then, launch the system and access your dashboard:
    ```
 2. Navigate to **http://localhost:9124** in your browser.
 
-### Data Persistence (Kalıcı Veri)
+### Data Persistence
 
 ZeroStat-Go allows you to configure settings like your Port, Admin Password, and Telegram/Webhook credentials dynamically through the web UI's Settings panel, while your active rules are controlled through the Automation panel. 
 
