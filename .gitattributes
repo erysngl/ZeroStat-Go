@@ -1,2 +1,3 @@
 demo/*.html linguist-vendored
 templates/tasks.html linguist-vendored
+templates/settings.html linguist-vendored
