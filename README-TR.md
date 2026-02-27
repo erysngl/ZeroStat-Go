@@ -16,6 +16,12 @@
   <strong>Ultra Hafif Sistem ve Ağ Gösterge Paneli</strong>
 </p>
 
+<img width="1919" height="923" alt="screnshot (2)" src="https://github.com/user-attachments/assets/94ec2498-f73f-4733-8fb0-afb35bf54d87" />
+<br> <div align="center">
+  <img width="49%" alt="screnshot (1)" src="https://github.com/user-attachments/assets/6daa21f7-c36c-464b-a1f1-4e2fdf0ec5ad" />
+  <img width="49%" alt="screnshot (3)" src="https://github.com/user-attachments/assets/23d0b7c2-6822-41c9-a9f0-dd6d7410b2f5" />
+</div>
+
 ## Genel Bakış
 
 **ZeroStat-Go**, maksimum verimlilik için tasarlanmış yüksek performanslı, minimalist bir sunucu kaynak izleme panelidir. Ağır JavaScript frameworklerini tamamen es geçerek Go, HTMX ve Tailwind CSS kullanır. Altyapınızı izlerken sisteme yok denecek kadar az yük bindirip gerçek zamanlı görünürlük sağlar. Sadece izlemez, müdahale eder.
